@@ -1,8 +1,7 @@
 # DL_Backpropagation
 Implementing Backpropagation algorithm in DL
 
-
-DL_Backpropagation is a Python package that implements backpropagation, a widely used algorithm for training neural networks. Backpropagation is a form of gradient descent that allows the network to learn from examples and adjust its weights and biases to better fit the training data. This package provides a simple implementation of backpropagation that can be easily extended and customized.
+Backpropagation is a widely used algorithm for training neural networks. Backpropagation is a form of gradient descent that allows the network to learn from examples and adjust its weights and biases to better fit the training data. This package provides a simple implementation of backpropagation that can be easily extended and customized.
 
 # Usage
 To use DL_Backpropagation, first clone or download the repository from GitHub:
