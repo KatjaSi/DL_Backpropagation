@@ -42,7 +42,7 @@ class Activations():
 
         def derivative(o):
             derivative = np.zeros((len(o),len(o) ), float)
-            diag = np.where(0 > 0, 1.0, 0.0) # o is output of the layer, so o = tanh(x)
+            diag = np.where(o > 0, 1.0, 0.0) # o is output of the layer, so o = tanh(x)
             np.fill_diagonal(derivative, diag)
             return derivative
         

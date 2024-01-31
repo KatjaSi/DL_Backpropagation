@@ -42,7 +42,7 @@ class InnerLayer(Layer):
             self.output = output
         return output
 
-    def backward_pass(self, J_L_N, learning_rate=0.01, regularization=None, pen_rate=0.0):#, case): # case is the number of case in the batch
+    def backward_pass(self, J_L_N, regularization=None, pen_rate=0.0):#, case): # case is the number of case in the batch
         """
         J_sum_z = self.activation.derivative(self.output[case])
         J_y_z = np.dot(J_sum_z, self.weights.T) # connecting y and z layers
@@ -68,9 +68,9 @@ class InnerLayer(Layer):
         # onlu sum when all case from th minibatch passed
         if regularization is not None:
             self.regularize(regularization, pen_rate)
-        self.weights -= learning_rate*J_w_L
+        self.weights -= self.learning_rate*J_w_L
         # becase d output/d_bias = identity matrix, so 
-        self.biases -= learning_rate*np.sum(np.dot(J_L_N,1),axis=0) 
+        self.biases -= self.learning_rate*np.sum(np.dot(J_L_N,1),axis=0) 
        # J_y_L = np.dot(J_L_N, J_y_z) # to be passed 
         #J_y_L = np.sum(np.dot(J_L_N, J_y_z), axis = 1) 
         J_y_L = np.einsum('ki,kij->kj', J_L_N, J_y_z)

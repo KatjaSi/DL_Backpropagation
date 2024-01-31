@@ -57,24 +57,31 @@ class Network():
         self.all_train_cases = cases
         if batch_size > len(cases):
             batch_size = len(cases)
-        for _ in range(epochs):
+        for epoch in range(epochs):
+            print(f"Epoch {epoch + 1}/{epochs}")
+            running_loss = 0.0
             i = 0
             while i < len(cases):
                 batch_cases = cases[i:i+batch_size]
                 batch_targets = targets[i:i+batch_size]
-                i += batch_size
+                
                 self.forward_pass(batch_cases, batch_targets)
                 self.backward_pass()
 
                 ## calculating loss for displaing
-                all_predictions = self.predict(self.all_train_cases)
-                loss = self.loss_function(all_predictions, self.train_targets).func() 
-                self.train_loss.append(np.mean(loss))
-
-                if valid_set is not None:
-                    all_valid_predictions = self.predict(self.valid_cases)
-                    v_loss = self.loss_function(all_valid_predictions, self.valid_targets).func() 
-                    self.valid_loss.append(np.mean(v_loss))
+                batch_predictions = self.predict(batch_cases)
+                running_loss += np.mean(self.loss_function(batch_predictions, self.train_targets[i:i+batch_size]).func() )
+                #self.train_loss.append(np.mean(loss))
+                i += batch_size
+            batches = len(cases)/batch_size
+            self.train_loss.append(running_loss*1.0/batches)
+            
+            if valid_set is not None:
+                all_valid_predictions = self.predict(self.valid_cases)
+                v_loss = self.loss_function(all_valid_predictions, self.valid_targets).func() 
+                self.valid_loss.append(np.mean(v_loss))
+            
+            print(f"Train loss: {self.train_loss[-1]}, validation loss: {self.valid_loss[-1]}")
         
         if verbose:
             f =  open('network_output.txt', 'w')
@@ -83,7 +90,7 @@ class Network():
             for case in train_set[0]:
                 f.write(str(case)+"\n")
             f.write('Network outputs:\n')
-            for p in all_predictions:
+            for p in self.predict(self.all_train_cases):
                 f.write(str(p)+"\n")
             f.write('Target values:\n')
             for t in self.train_targets:
@@ -121,7 +128,7 @@ class Network():
             graph2, = ax.plot(self.valid_loss, label = "Validation Loss")
             legend2 = ax.legend(handles =[graph2],  loc ='lower center')
             ax.add_artist(legend2)
-        plt.xlabel("Minibatch")
+        plt.xlabel("Epoch")
         plt.ylabel("Loss")
         plt.show()
 
